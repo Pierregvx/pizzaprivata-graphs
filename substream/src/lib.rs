@@ -1,6 +1,8 @@
 mod pb;
+mod abi;
 #[path = "kv_out.rs"]
 mod kv;
+
 use substreams::errors::Error;
 use hex_literal::hex;
 use pb::eth::tx::v1 as tx;
@@ -14,7 +16,7 @@ use substreams_sink_kv::pb::sf::substreams::sink::kv::v1::KvOperations;
 use hex::encode as hex_encode;
 use substreams::proto;
 use crate::pb::eth::tx::v1::EthTransactions;
-
+use pb::eth::erc20::v1 as erc20;
 
 // /// Extracts transactions from the contract
 // #[derive(Debug, Deserialize)]
@@ -27,6 +29,7 @@ const TRACKED_CONTRACTS: [[u8; 20]; 2] = [
     hex!("7a250d5630B4cF539739dF2C5dAcb4c659F2488D")
 ];
 
+const TRACKED_CONTRACT: [u8; 20] = hex!("0B1ba0af832d7C05fD64161E0Db78E85978E8082");
 
 #[substreams::handlers::map]
 fn map_transactions(
@@ -67,6 +70,26 @@ fn map_transactions(
     })
 }
 
+#[substreams::handlers::map]
+fn map_transfers(blk: eth::Block) -> Result<erc20::Transfers, substreams::errors::Error> {
+    log::info!("Transfer state builder");
+    Ok(erc20::Transfers {
+        transfers: blk
+            .events::<abi::erc20::events::Transfer>(&[&TRACKED_CONTRACT])
+            .map(|(transfer, log)| {
+                substreams::log::info!("NFT Transfer seen");
+
+                erc20::Transfer {
+                    trx_hash: log.receipt.transaction.hash.clone(),
+                    from: transfer.from,
+                    to: transfer.to,
+                    token_id: transfer.token_id.to_u64(),
+                    ordinal: log.block_index() as u64,
+                }
+            })
+            .collect(),
+    })
+}
 
 
 /// Store the transactions for the specific TRACKED_CONTRACT
@@ -81,7 +104,7 @@ fn store_transactions(transactions: tx::EthTransactions, s: StoreAddInt64) {
 
 
 #[substreams::handlers::map]
-pub fn graph_out(transactions: tx::EthTransactions) -> Result<EntityChanges, substreams::errors::Error> {
+pub fn graph_out(transactions: tx::EthTransactions,transfers:erc20::Transfers) -> Result<EntityChanges, substreams::errors::Error> {
     // hash map of name to a table
     let mut tables = Tables::new();
 
@@ -97,6 +120,15 @@ pub fn graph_out(transactions: tx::EthTransactions) -> Result<EntityChanges, sub
             // .set("v", transaction.v)
             // .set("r", transaction.r)
             // .set("s", transaction.s)
+            ;
+    }
+    for transfer in transfers.transfers.into_iter() {
+        tables
+            .create_row("Transfer", &hex::encode(&transfer.trx_hash))
+            .set("from", transfer.from)
+            .set("to", transfer.to)
+            .set("token_id", transfer.token_id)
+            .set("ordinal", transfer.ordinal)
             ;
     }
 

@@ -28,3 +28,30 @@ type Transaction @entity {
   "The s part of the transaction's signature"
   s: String              # Assuming 's' is a string in hexadecimal format
 }
+
+
+type Transfer @entity {
+  id: ID!                  # Using trx_hash as the ID
+
+  "The from address of the transfer"
+  from: String!
+
+  "The to address of the transfer"
+  to: String!
+
+  "The token id of the transfer"
+  tokenId: String!
+
+  "The trx hash of the transfer"
+  trxHash: String!
+
+  "The ordinal of the transfer"
+  ordinal: String!
+}
+
+type User {
+  id: ID!
+  name: String!
+  transactions: [Transaction!]! @derivedFrom(field: "to")
+  transfers: [Transfer!]! @derivedFrom(field: "to")
+}

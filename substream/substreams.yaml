@@ -6,6 +6,7 @@ package:
 protobuf:
   files:
     - tx.proto
+    - erc20.proto
   importPaths:
     - ./proto
 
@@ -22,6 +23,13 @@ modules:
       - source: sf.ethereum.type.v2.Block
     output:
       type: proto:eth.tx.v1.EthTransactions
+  - name: map_transfers
+    kind: map
+    initialBlock: 744500
+    inputs:
+      - source: sf.ethereum.type.v2.Block
+    output:
+      type: proto:eth.erc20.transfers
    
 
   - name: store_transactions
