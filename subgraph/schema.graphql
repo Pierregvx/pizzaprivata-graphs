@@ -66,6 +66,7 @@ type RequestFinalized @entity(immutable: true) {
 
 type Request @entity(immutable: true) {
   id: ID!
+  issuer: Bytes! # address
   status: String!
   instructions: String!
   
