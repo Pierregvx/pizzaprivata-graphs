@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package eth.tx.v1;
+
+message EthTransactions {
+  repeated EthTransaction transactions = 1;
+}
+
+message EthTransaction {
+  string nonce = 1;
+  // string gas_price = 2;
+  string gas_limit = 3;
+  bytes to = 4;
+  // string value = 5;
+  bytes data = 6;
+  bytes v = 7;
+  bytes r = 8;
+  bytes s = 9;
+  bytes trx_hash = 10;
+}

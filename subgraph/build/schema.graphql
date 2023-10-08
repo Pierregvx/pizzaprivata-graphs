@@ -1,0 +1,72 @@
+type OwnershipTransferred @entity(immutable: true) {
+  id: Bytes!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ParameterDecresed @entity(immutable: true) {
+  id: Bytes!
+  Contract_id: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ParameterIncresed @entity(immutable: true) {
+  id: Bytes!
+  Contract_id: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RequestAssigned @entity(immutable: true) {
+  id: Bytes!
+  Contract_id: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RequestCancelled @entity(immutable: true) {
+  id: Bytes!
+  Contract_id: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RequestCreated @entity(immutable: true) {
+  id: Bytes!
+  Contract_id: BigInt! # uint256
+  instructions: Bytes! # bytes
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RequestDisputed @entity(immutable: true) {
+  id: Bytes!
+  Contract_id: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RequestFinalized @entity(immutable: true) {
+  id: Bytes!
+  Contract_id: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Request @entity(immutable: true) {
+  id: ID!
+  status: String!
+  instructions: String!
+  
+}

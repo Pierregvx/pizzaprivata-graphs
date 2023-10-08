@@ -1,0 +1,45 @@
+specVersion: v0.1.0
+package:
+  name: "substreams_template"
+  version: v0.1.0
+
+protobuf:
+  files:
+    - tx.proto
+  importPaths:
+    - ./proto
+
+binaries:
+  default:
+    type: wasm/rust-v1
+    file: ./target/wasm32-unknown-unknown/release/substreams.wasm
+
+modules:
+  - name: map_transactions
+    kind: map
+    initialBlock: 9425919
+    inputs:
+      - source: sf.ethereum.type.v2.Block
+    output:
+      type: proto:eth.tx.v1.EthTransactions
+   
+
+  - name: store_transactions
+    kind: store
+    initialBlock: 9425919
+    updatePolicy: add
+    valueType: int64
+    inputs:
+      - map: map_transactions
+  - name: graph_out
+    kind: map
+    inputs:
+      - map: map_transactions
+    output:
+      type: proto:substreams.entity.v1.EntityChanges # this type can be consumed by Graph Node
+  - name: kv_out
+    kind: map
+    output:
+      type: proto:sf.substreams.sink.kv.v1.KVOperations
+# params:
+#     map_params: address=aaa..aaa&amount=100

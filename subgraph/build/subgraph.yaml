@@ -1,0 +1,45 @@
+specVersion: 0.0.5
+schema:
+  file: schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Contract
+    network: goerli
+    source:
+      address: "0xF0bBE0e61988B9F44E2F466B5223E6467963c805"
+      abi: Contract
+      startBlock: 9827344
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - OwnershipTransferred
+        - ParameterDecresed
+        - ParameterIncresed
+        - RequestAssigned
+        - RequestCancelled
+        - RequestCreated
+        - RequestDisputed
+        - RequestFinalized
+      abis:
+        - name: Contract
+          file: Contract/abis/Contract.json
+      eventHandlers:
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: ParameterDecresed(uint256)
+          handler: handleParameterDecresed
+        - event: ParameterIncresed(uint256)
+          handler: handleParameterIncresed
+        - event: RequestAssigned(uint256)
+          handler: handleRequestAssigned
+        - event: RequestCancelled(uint256)
+          handler: handleRequestCancelled
+        - event: RequestCreated(uint256,bytes)
+          handler: handleRequestCreated
+        - event: RequestDisputed(uint256)
+          handler: handleRequestDisputed
+        - event: RequestFinalized(uint256)
+          handler: handleRequestFinalized
+      file: Contract/Contract.wasm

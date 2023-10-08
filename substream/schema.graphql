@@ -1,0 +1,30 @@
+type Transaction @entity {
+  id: ID!                  # Using trx_hash as the ID
+
+  "The nonce of the transaction"
+  nonce: String!
+
+  "The gas price of the transaction"
+  gasPrice: String
+
+  "The gas limit of the transaction"
+  gasLimit: String!
+
+  "The recipient of the transaction"
+  to: String!              # Assuming 'to' is a string in hexadecimal format
+
+  "The value of the transaction"
+  value: String
+
+  "The input data of the transaction"
+  data: String!            # Assuming 'data' is a string in hexadecimal format
+
+  "The v part of the transaction's signature"
+  v: String              # Assuming 'v' is a string in hexadecimal format
+
+  "The r part of the transaction's signature"
+  r: String              # Assuming 'r' is a string in hexadecimal format
+
+  "The s part of the transaction's signature"
+  s: String              # Assuming 's' is a string in hexadecimal format
+}
